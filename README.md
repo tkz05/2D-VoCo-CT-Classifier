@@ -4,6 +4,8 @@ In the field of medical image analysis, the performance of deep learning models 
 However, medical annotations often face high costs and require specialized expertise. To reduce reliance on manual labeling, this study proposes a self-supervised contrastive learning framework tailored for 2D medical imaging , adapted from the 3D Volume Contrastive Learning Framework (VoCo), and integrates sequence modeling techniques to enhance performance in abdominal trauma classification tasks.
 This study explores the application of the improved 2D VoCo method on abdominal CT image classification. By conducting slice-level contrastive pretraining on publicly available abdominal datasets, the model learns semantic structures across slices and transfers the pretrained backbone to the RSNA 2023 dataset for downstream multi-organ and single-organ injury classification tasks. The downstream model adopts a CNN-LSTM architecture to capture spatial-temporal correlations across slices, and a series of ablation studies are conducted to validate the effectiveness of the proposed contrastive strategy.
 
+---
+
 ## 📘 Project Overview
 
 This repository contains two major components:
