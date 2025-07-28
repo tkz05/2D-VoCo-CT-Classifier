@@ -12,7 +12,7 @@ This repository contains two major components:
 ---
 
 ## 📂 Project Structure
-
+```
 2D-VoCo-CT-Classifier/
 │
 ├── VoCo-main/ # VoCo pretraining framework (Self-supervised learning)
@@ -29,7 +29,7 @@ This repository contains two major components:
 │ └── ...
 │
 └── README.md
-
+```
 
 
 ---
