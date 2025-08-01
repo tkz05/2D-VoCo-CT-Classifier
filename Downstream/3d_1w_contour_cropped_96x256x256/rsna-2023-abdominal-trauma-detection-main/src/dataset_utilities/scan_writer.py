@@ -1,0 +1,103 @@
+import sys
+import os
+from tqdm import tqdm
+import numpy as np
+import pandas as pd
+import cv2
+import pydicom
+import torch
+from monai.transforms import Resize
+
+sys.path.append(os.path.abspath('H:/rsna-2023-abdominal-trauma-detection-main/src'))
+import dicom_utilities
+
+if __name__ == '__main__':
+
+    dicom_dataset_directory = "H:\\train_images"
+    image_dataset_directory = "H:\\14th_output\\images"
+    patient_ids = sorted(os.listdir(image_dataset_directory), key=lambda filename: int(filename))
+
+    output_directory = "H:\\14th_output\\3d_1w_contour_cropped_96x256x256\\volumes"
+    os.makedirs(output_directory, exist_ok=True)
+
+    resize = Resize(spatial_size=(96, 256, 256))
+
+    for patient_id in tqdm(patient_ids):
+
+        patient_directory = os.path.join(image_dataset_directory, patient_id)
+        patient_scans = sorted(os.listdir(patient_directory), key=lambda filename: int(filename))
+
+        for scan_id in patient_scans:
+
+            scan_directory = os.path.join(patient_directory, scan_id)
+            file_names = sorted(os.listdir(scan_directory), key=lambda x: int(str(x).split('.')[0]))
+
+            z_positions = []
+            patient_positions = []
+            scan = []
+
+            for file_idx, file_name in enumerate(file_names, start=1):
+
+                dicom = pydicom.dcmread(os.path.join(dicom_dataset_directory, patient_id, scan_id, f"{file_name.split('.')[0]}.dcm"))
+                image = cv2.imread(os.path.join(scan_directory, file_name), -1)
+
+                scan.append(image)
+
+                try:
+                    patient_position = dicom.PatientPosition
+                except AttributeError:
+                    patient_position = 'FFS'
+
+                patient_positions.append(patient_position)
+
+                try:
+                    z_position = float(dicom.ImagePositionPatient[-1])
+                except AttributeError:
+                    z_position = file_idx * -1
+
+                z_positions.append(z_position)
+
+            scan = np.array(scan)
+
+            # 按照 Z 軸排序
+            sorting_idx_z = np.argsort(z_positions)[::-1]
+            scan = scan[sorting_idx_z]
+
+            patient_position = pd.Series(patient_positions).value_counts().index[0]
+            if patient_position == 'HFS':
+                scan = np.flip(scan, axis=2)
+
+            # 處理全黑切片
+            if scan.shape[0] != 1:
+                scan_all_zero_vertical_line_transitions = np.diff(np.all(scan == 0, axis=1).sum(axis=1))
+                slices_with_all_zero_vertical_lines = (scan_all_zero_vertical_line_transitions > 5) | (scan_all_zero_vertical_line_transitions < -5)
+                slices_with_all_zero_vertical_lines = np.append(slices_with_all_zero_vertical_lines, slices_with_all_zero_vertical_lines[-1])
+                scan = scan[~slices_with_all_zero_vertical_lines]
+
+            # 裁剪最大輪廓
+            largest_contour_bounding_boxes = np.array([dicom_utilities.get_largest_contour(image) for image in scan])
+            largest_contour_bounding_box = [
+                int(largest_contour_bounding_boxes[:, 0].min()),
+                int(largest_contour_bounding_boxes[:, 1].min()),
+                int(largest_contour_bounding_boxes[:, 2].max()),
+                int(largest_contour_bounding_boxes[:, 3].max()),
+            ]
+            scan = scan[
+                :,
+                largest_contour_bounding_box[1]:largest_contour_bounding_box[3] + 1,
+                largest_contour_bounding_box[0]:largest_contour_bounding_box[2] + 1,
+            ]
+
+            # 裁剪非零的切片
+            mmin = np.array((scan > 0).nonzero()).min(axis=1)
+            mmax = np.array((scan > 0).nonzero()).max(axis=1)
+            scan = scan[
+                mmin[0]:mmax[0] + 1,
+                mmin[1]:mmax[1] + 1,
+                mmin[2]:mmax[2] + 1
+            ]
+
+            scan = resize(torch.from_numpy(np.expand_dims(scan, axis=0)))
+            scan = torch.squeeze(scan, dim=0).numpy().astype(np.uint8)
+
+            np.save(os.path.join(output_directory, f'{patient_id}_{scan_id}.npy'), scan)

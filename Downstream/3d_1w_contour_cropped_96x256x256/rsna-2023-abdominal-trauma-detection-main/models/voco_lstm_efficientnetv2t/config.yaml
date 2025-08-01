@@ -1,0 +1,192 @@
+dataset:
+  dataset_name: 3d_1w_contour_cropped_96x256x256
+
+# model:
+#   model_class: 'LinearEvaluationModel'  # 使用 Linear Evaluation Model
+#   model_args:
+#     model_name: 'efficientnetv2_rw_t'
+#     pretrained: False  # 設定為 False，因為我們會手動載入 VoCo 預訓練權重
+#     backbone_args:
+#       in_chans: 1
+#       drop_rate: 0.1
+#       drop_path_rate: 0.0
+#     feature_pooling_type: 'avg'  # 可以嘗試 'avg', 'max', 'concat', 'gem'
+#     dropout_rate: 0.0
+#     freeze_parameters: True  # 先全凍結 CNN Backbone，做 Linear Evaluation
+#   model_checkpoint_path: null
+# model:
+#   model_class: 'SwinRNNClassificationModelWithSingleFeature'  # 使用 SwinViT + LSTM 架構
+#   model_args:
+#     model_name: 'swin_tiny_patch4_window7_224'
+#     pretrained: True
+#     backbone_args:
+#       in_chans: 1
+#       img_size: 192  
+#       drop_rate: 0.1
+#       drop_path_rate: 0.0
+#     feature_pooling_type: 'avg' 
+#     rnn_class: 'LSTM'
+#     rnn_args:
+#       hidden_size: 128
+#       num_layers: 1
+#       batch_first: True
+#       bidirectional: True
+#     dropout_rate: 0.0
+#     freeze_parameters: False
+#     # student_weights_path : 
+#     # student_weights_path: '/workspace/rsna/rsna-2023-abdominal-trauma-detection-main/models/voco_lstm_vit/20250410_SwinViT_step50000.pth'
+#   model_checkpoint_path: null
+
+model:
+  model_class: 'RNNClassificationModel'
+  model_args:
+    model_name: 'efficientnetv2_rw_s' #'efficientnetv2_rw_s' #'efficientnet_b0' #'efficientnetv2_rw_t'
+    pretrained: True
+    backbone_args:
+      in_chans: 1 
+      drop_rate: 0.1
+      drop_path_rate: 0.0
+    feature_pooling_type: 'avg'
+    rnn_class: 'LSTM'
+    rnn_args:
+      hidden_size: 128
+      num_layers: 1
+      batch_first: True
+      bidirectional: True
+    dropout_rate: 0.0
+    freeze_parameters: False
+  model_checkpoint_path: null  
+
+
+training:
+  folds: ['fold1', 'fold2', 'fold3', 'fold4', 'fold5']
+  # folds: [0, 1, 2, 3, 4]
+  bowel_loss_function: 'SampleWeightedBCEWithLogitsLoss'
+  bowel_loss_function_args: {}
+  extravasation_loss_function: 'SampleWeightedBCEWithLogitsLoss'
+  extravasation_loss_function_args: {}
+  kidney_loss_function: 'SampleWeightedCrossEntropyLoss'
+  kidney_loss_function_args: {}
+  liver_loss_function: 'SampleWeightedCrossEntropyLoss'
+  liver_loss_function_args: {}
+  spleen_loss_function: 'SampleWeightedCrossEntropyLoss'
+  spleen_loss_function_args: {}
+  training_batch_size: 4
+  accumulation_steps: 4
+  test_batch_size: 4
+  num_workers: 0
+  random_state: 42
+  deterministic_cudnn: False
+  device: 'cuda'
+  optimizer: 'AdamW'
+  optimizer_args:
+    lr: 0.000125
+    betas: [0.9, 0.999]
+    weight_decay: 0.00001
+  lr_scheduler: 'CosineAnnealingLR'
+  lr_scheduler_args:
+    T_max: 5000
+    eta_min: 0.0000125
+    last_epoch: -1
+    verbose: False
+  amp: True
+  epochs: 20
+  early_stopping_patience: 999
+
+
+# training:
+#   folds: ['fold1', 'fold2', 'fold3', 'fold4', 'fold5']
+#   bowel_loss_function: 'SampleWeightedBCEWithLogitsLoss'
+#   bowel_loss_function_args: {}
+#   extravasation_loss_function: 'SampleWeightedBCEWithLogitsLoss'
+#   extravasation_loss_function_args: {}
+#   kidney_loss_function: 'SampleWeightedCrossEntropyLoss'
+#   kidney_loss_function_args: {}
+#   liver_loss_function: 'SampleWeightedCrossEntropyLoss'
+#   liver_loss_function_args: {}
+#   spleen_loss_function: 'SampleWeightedCrossEntropyLoss'
+#   spleen_loss_function_args: {}
+#   training_batch_size: 2
+#   test_batch_size: 4
+#   num_workers: 0
+#   random_state: 42
+#   deterministic_cudnn: False
+#   device: 'cuda'
+#   optimizer: 'AdamW'
+#   optimizer_args:
+#     lr: 0.000125
+#     betas: [0.9, 0.999]
+#     weight_decay: 0.00001
+#   lr_scheduler: 'CosineAnnealingLR'
+#   lr_scheduler_args:
+#     T_max: 5000
+#     eta_min: 0.0000125
+#     last_epoch: -1
+#     verbose: False
+#   amp: True
+#   epochs: 25
+#   early_stopping_patience: 999
+
+
+# training:
+#   folds: ['fold1', 'fold2', 'fold3', 'fold4', 'fold5']
+#   bowel_loss_function: 'SampleWeightedBCEWithLogitsLoss'
+#   bowel_loss_function_args: {}
+#   extravasation_loss_function: 'SampleWeightedBCEWithLogitsLoss'
+#   extravasation_loss_function_args: {}
+#   kidney_loss_function: 'SampleWeightedCrossEntropyLoss'
+#   kidney_loss_function_args: {}
+#   liver_loss_function: 'SampleWeightedCrossEntropyLoss'
+#   liver_loss_function_args: {}
+#   spleen_loss_function: 'SampleWeightedCrossEntropyLoss'
+#   spleen_loss_function_args: {}
+#   training_batch_size: 2
+#   test_batch_size: 4
+#   num_workers: 0
+#   random_state: 42
+#   deterministic_cudnn: False
+#   device: 'cuda'
+#   optimizer: 'AdamW'
+#   optimizer_args:
+#     lr: 0.00005  # 原來 0.000125，調低以適應預訓練
+#     betas: [0.9, 0.999]
+#     weight_decay: 0.00005  # 原來 0.00001，適當增加正則化
+#   lr_scheduler: 'CosineAnnealingLR'
+#   lr_scheduler_args:
+#     T_max: 2000  # 原來 5000，縮短適應較少的 epochs
+#     eta_min: 0.0000125
+#     last_epoch: -1
+#     verbose: False
+#   amp: False
+#   epochs: 15
+#   early_stopping_patience: 999
+
+test:
+  folds: [fold1, fold2, fold3, fold4, fold5]
+  model_file_names: ['model_fold1_best.pt', 'model_fold2_best.pt', 'model_fold3_best.pt', 'model_fold4_best.pt', 'model_fold5_best.pt']
+  tta: True
+  tta_flip_dimensions: [[2, 3, 4], [2, 3], [2, 4], [3, 4]]
+
+transforms:
+  random_z_flip_probability: 0.5
+  random_x_flip_probability: 0.5
+  random_y_flip_probability: 0.5
+  random_axial_rotate_90_probability: 0.25
+  random_rotate_range_x: 0.0
+  random_rotate_range_y: 0.0
+  random_rotate_range_z: 0.45
+  random_rotate_probability: 0.1
+  random_histogram_shift_num_control_points: 25
+  random_histogram_shift_probability: 0.05
+  random_contrast_gamma: [0.5, 2.5]
+  random_contrast_probability: 0.05
+  crop_roi_size: [-1, 192, 192]
+  cutout_holes: 8
+  cutout_spatial_size: [4, 8, 8]
+  cutout_max_holes: 16
+  max_spatial_size: [8, 16, 16]
+  cutout_probability: 0.1
+
+persistence:
+  model_directory: 'lstm_efficientnetv2t_3d_1w_contour_cropped_96x256x256'
+  save_epoch_model: []
