@@ -109,5 +109,18 @@ You can modify this file to adjust downstream training settings.
 ```
 - `model_folder_path`: Directory where logs and checkpoints will be saved.  
 - `training`: Mode flag .
+- 
+
+### ROI
+
+
+
+To extract meaningful foreground regions from abdominal CT volumes, we utilize **[TotalSegmentator](https://github.com/wasserth/TotalSegmentator)** to perform automatic multi-organ segmentation.
+
+Based on the predicted segmentation masks, we generate the **bounding box of the largest connected component** per case, and use this as the **ROI cropping region** for 3D volume preprocessing.
+
+The cropped ROI is then resized to a standardized shape (e.g., `96×256×256`) before feeding into the downstream classification model.
+
+
 
 
