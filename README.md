@@ -57,26 +57,32 @@ This section demonstrates how to run 2D VoCo pretraining using the provided trai
 # Launch pretraining with default configuration
 python voco_train.py
 ```
-| Argument               | Type  | Default            | Description                                          |
-| ---------------------- | ----- | ------------------ | ---------------------------------------------------- |
-| `--logdir`             | str   | `logs`             | Directory to save logs and checkpoints               |
-| `--epochs`             | int   | `100`              | Number of training epochs                            |
-| `--num_steps`          | int   | `250000`           | Total training steps (overrides epochs if both used) |
-| `--batch_size`         | int   | `4`                | Batch size                                           |
-| `--lr`                 | float | `1e-4`             | Learning rate                                        |
-| `--opt`                | str   | `adamw`            | Optimizer type (`adam`, `adamw`, etc.)               |
-| `--lr_schedule`        | str   | `warmup_cosine`    | Learning rate scheduler                              |
-| `--resume`             | str   | `None`             | Resume from checkpoint (e.g. `runs/model_epoch.pt`)  |
-| `--loss_type`          | str   | `SSL`              | Type of loss function                                |
-| `--roi_x/y/z`          | int   | *(from `roi`)*     | Patch size in each axis                              |
-| `--space_x/y/z`        | float | `1.5`              | Spacing of voxel grid                                |
-| `--a_min` / `a_max`    | float | `-175.0` / `250.0` | Intensity clipping range                             |
-| `--use_checkpoint`     | bool  | `True`             | Use gradient checkpointing to save memory            |
-| `--noamp`              | bool  | `True`             | Disable mixed-precision (AMP) training               |
-| `--grad_clip`          | flag  | `False`            | Enable gradient clipping                             |
-| `--smartcache_dataset` | bool  | `False`            | Use MONAI SmartCache dataset                         |
-| `--cache_dataset`      | flag  | `False`            | Use MONAI CacheDataset                               |
-For a complete list, see the argparse block in voco_train.py.
+| Argument               | Default            | Description                                                                 |
+| ----------------------| ------------------ |-----------------------------------------------------------------------------|
+| `--logdir`             | `logs`             | Directory to save logs and checkpoints                                      |
+| `--epochs`             | `100`              | Number of training epochs                                                   |
+| `--num_steps`          | `250000`           | Total training steps (overrides epochs if both used)                        |
+| `--batch_size`         | `4`                | Batch size                                                                  |
+| `--lr`                 | `1e-4`             | Learning rate                                                               |
+| `--opt`                | `adamw`            | Optimizer type (`adam`, `adamw`, etc.)                                      |
+| `--lr_schedule`        | `warmup_cosine`    | Learning rate scheduler                                                     |
+| `--resume`             | `None`             | Resume from checkpoint (e.g. `runs/model_epoch.pt`)                         |
+| `--loss_type`          | `SSL`              | Type of loss function                                                       |
+| `--roi_x/y/z`          | *(from `roi`)*     | Patch size in each axis                                                     |
+| `--space_x/y/z`        | `1.5`              | Spacing of voxel grid                                                       |
+| `--a_min` / `a_max`    | `-175.0` / `250.0` | Intensity clipping range — use `-175/250` for FLARE23, `0/255` for RSNA     |
+| `--use_checkpoint`     | `True`             | Use gradient checkpointing to save memory                                   |
+| `--noamp`              | `True`             | Disable mixed-precision (AMP) training                                      |
+| `--grad_clip`          | `False`            | Enable gradient clipping                                                    |
+| `--smartcache_dataset` | `False`            | Use MONAI SmartCache dataset                                                |
+| `--cache_dataset`      | `False`            | Use MONAI CacheDataset                                                      |
+
+For a complete list, see the `argparse` block in `voco_train.py`.
+
+> 💡 **Note:**  
+> For `--a_min` / `--a_max`, we recommend using:  
+> - `-175.0` / `250.0` for FLARE23 (covers most soft tissue HU range)  
+> - `0` / `255` for RSNA (normalized pixel value range in PNG format)
 
 
 ### Downstream
