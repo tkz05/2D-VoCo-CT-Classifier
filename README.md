@@ -45,6 +45,39 @@ This project relies on two main abdominal CT datasets for pretraining and classi
 ---
 ## Quick Start
 
+### 2D VoCo
+
+This section demonstrates how to run 2D VoCo pretraining using the provided training script.
+
+> All configurable parameters (e.g., data path, crop size, number of epochs) are available as command-line arguments in `voco_train.py`.
+
+#### Example
+```bash
+# Launch pretraining with default configuration
+python voco_train.py
+
+| Argument               | Type  | Default            | Description                                          |
+| ---------------------- | ----- | ------------------ | ---------------------------------------------------- |
+| `--logdir`             | str   | `logs`             | Directory to save logs and checkpoints               |
+| `--epochs`             | int   | `100`              | Number of training epochs                            |
+| `--num_steps`          | int   | `250000`           | Total training steps (overrides epochs if both used) |
+| `--batch_size`         | int   | `4`                | Batch size                                           |
+| `--lr`                 | float | `1e-4`             | Learning rate                                        |
+| `--opt`                | str   | `adamw`            | Optimizer type (`adam`, `adamw`, etc.)               |
+| `--lr_schedule`        | str   | `warmup_cosine`    | Learning rate scheduler                              |
+| `--resume`             | str   | `None`             | Resume from checkpoint (e.g. `runs/model_epoch.pt`)  |
+| `--loss_type`          | str   | `SSL`              | Type of loss function                                |
+| `--roi_x/y/z`          | int   | *(from `roi`)*     | Patch size in each axis                              |
+| `--space_x/y/z`        | float | `1.5`              | Spacing of voxel grid                                |
+| `--a_min` / `a_max`    | float | `-175.0` / `250.0` | Intensity clipping range                             |
+| `--use_checkpoint`     | bool  | `True`             | Use gradient checkpointing to save memory            |
+| `--noamp`              | bool  | `True`             | Disable mixed-precision (AMP) training               |
+| `--grad_clip`          | flag  | `False`            | Enable gradient clipping                             |
+| `--smartcache_dataset` | bool  | `False`            | Use MONAI SmartCache dataset                         |
+| `--cache_dataset`      | flag  | `False`            | Use MONAI CacheDataset                               |
+For a complete list, see the argparse block in voco_train.py.
+```
+
 ### Downstream
 
 This section shows how to run the downstream classification task using the pretrained VoCo backbone and CNN-LSTM model.
