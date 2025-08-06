@@ -49,7 +49,8 @@ This project relies on two main abdominal CT datasets for pretraining and classi
 
 This section demonstrates how to run 2D VoCo pretraining using the provided training script.
 
-> All configurable parameters (e.g., data path, crop size, number of epochs) are available as command-line arguments in `voco_train.py`.
+> Dataset path and crop size settings can be modified in `data_utils.py`.  
+> Training configurations such as epochs, batch size, and learning rate are specified via command-line arguments in `voco_train.py`.
 
 #### Example
 ```bash
@@ -81,6 +82,12 @@ For a complete list, see the argparse block in voco_train.py.
 ### Downstream
 
 This section shows how to run the downstream classification task using the pretrained VoCo backbone and CNN-LSTM model.
+
+> All training and evaluation parameters (e.g., model architecture, input size, learning rate) are specified in the YAML configuration file:  
+> `Downstream/3d_1w_contour_cropped_96x256x256/rsna-2023-abdominal-trauma-detection-main/models/voco_lstm_efficientnetv2t/config.yaml`
+
+You can modify this file to adjust downstream training settings.
+
 
 #### Example
 ```bash 
