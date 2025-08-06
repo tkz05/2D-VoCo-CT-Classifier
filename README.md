@@ -6,7 +6,7 @@ This study explores the application of the improved 2D VoCo method on abdominal 
 
 ---
 
-## 📘 Project Overview
+## Project Overview
 
 This repository contains two major components:
 
@@ -16,41 +16,19 @@ This repository contains two major components:
   - Contains LSTM + CNN classifier code for multi-organ and single-organ classification on abdominal CT images.
 
 ---
+## Setup
 
-## 📂 Project Structure
-```
-2D-VoCo-CT-Classifier/
-│
-├── VoCo-main/ # VoCo pretraining framework (Self-supervised learning)
-│ ├── data/ # Data preprocessing scripts for pretraining
-│ ├── models/ # VoCo models (EfficientNet, SwinViT, etc.)
-│ ├── voco_head/ # VoCo projection head implementations (v1, v2)
-│ ├── scripts/ # Training & evaluation scripts
-│ └── ...
-│
-├── lstm_cnn/ # LSTM-CNN classifier
-│ ├── dataset/ # Dataset loading & preprocessing
-│ ├── models/ # LSTM + CNN architecture implementations
-│ ├── scripts/ # Training & evaluation scripts
-│ └── ...
-│
-└── README.md
-```
+To ensure consistent and reproducible environments for both pretraining and classification tasks, this project uses a **Docker-based setup**.
 
+A complete Docker environment has been published on [Hugging Face Datasets](https://huggingface.co/datasets/tkz22005/docker_env/tree/main), which includes:
+
+- Preinstalled dependencies for VoCo-based contrastive learning and CNN-LSTM classification  
+- Compatible versions of PyTorch, MONAI, and other required libraries  
+- GPU support via NVIDIA CUDA and cuDNN
+
+To get started, simply pull and run the Docker container using the instructions provided in the repository above.
 
 ---
-
-## 🚀 Usage
-
-### 1️⃣ Create environment and install dependencies
-```bash
-conda create -n voco python=3.10
-conda activate voco
-pip install -r requirements.txt
-
-
-
-
 ## Dataset Download
 
 This project relies on two main abdominal CT datasets for pretraining and classification:
@@ -60,12 +38,10 @@ This project relies on two main abdominal CT datasets for pretraining and classi
 - Note: You need a Kaggle account to access and download the dataset.
 
 ### FLARE 2023 Dataset (used for VoCo pretraining)
-- Provided via Hugging Face by the VoCo authors collected by Dr. Jiaxin Zhuang: [https://huggingface.co/datasets/Luffy503/VoCo-10k/tree/main](https://huggingface.co/datasets/Luffy503/VoCo-10k/tree/main)  
-- 這邊提供原始voco的github:  
+- Official challenge page: [https://codalab.lisn.upsaclay.fr/competitions/12239#learn_the_details-dataset](https://codalab.lisn.upsaclay.fr/competitions/12239#learn_the_details-dataset)  
+- Hugging Face version (organized by VoCo authors): [https://huggingface.co/datasets/Luffy503/VoCo-10k/tree/main](https://huggingface.co/datasets/Luffy503/VoCo-10k/tree/main)  
+  - This version was collected and organized by Dr. [Jiaxin Zhuang](https://scholar.google.com/citations?user=PfM5gucAAAAJ&hl=en) .
 
-
-### Notes
-- Due to licensing restrictions, this repository does not include any raw CT data.  
-- Please download the datasets from the official sources listed above.  
-- After downloading, follow the preprocessing scripts in `VoCo-main/data/` to prepare the data for training.
+---
+## Quick Start
 
