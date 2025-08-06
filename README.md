@@ -45,3 +45,23 @@ This project relies on two main abdominal CT datasets for pretraining and classi
 ---
 ## Quick Start
 
+### Downstream
+
+This section shows how to run the downstream classification task using the pretrained VoCo backbone and CNN-LSTM model.
+
+#### Example
+```bash 
+    # Change to the training script directory
+    cd 2D-VoCo-CT-Classifier/Downstream/3d_1w_contour_cropped_96x256x256/rsna-2023-abdominal-trauma-detection-main/src/3d_classification_voco
+
+    # Launch training using the specified model folder
+    python torch_classification_trainer.py /workspace/rsna/rsna-2023-abdominal-trauma-detection-main/models/voco_lstm_efficientnetv2t training
+```
+#### Usage
+```bash 
+    python torch_classification_trainer.py [model_folder_path] training
+```
+- `model_folder_path`: Directory where logs and checkpoints will be saved.  
+- `training`: Mode flag .
+
+
