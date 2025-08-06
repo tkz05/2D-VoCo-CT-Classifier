@@ -55,7 +55,7 @@ This section demonstrates how to run 2D VoCo pretraining using the provided trai
 ```bash
 # Launch pretraining with default configuration
 python voco_train.py
-
+```
 | Argument               | Type  | Default            | Description                                          |
 | ---------------------- | ----- | ------------------ | ---------------------------------------------------- |
 | `--logdir`             | str   | `logs`             | Directory to save logs and checkpoints               |
@@ -76,7 +76,7 @@ python voco_train.py
 | `--smartcache_dataset` | bool  | `False`            | Use MONAI SmartCache dataset                         |
 | `--cache_dataset`      | flag  | `False`            | Use MONAI CacheDataset                               |
 For a complete list, see the argparse block in voco_train.py.
-```
+
 
 ### Downstream
 
